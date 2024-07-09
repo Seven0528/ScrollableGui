@@ -568,8 +568,8 @@ F3::    {
 }
 showGui()    {
     global myGui
-    WS_HSCROLL:=0x00100000
-    WS_VSCROLL:=0x00200000
+    WS_HSCROLL := 0x00100000
+    WS_VSCROLL := 0x00200000
     if (isSet(myGui) && myGui is gui)
         return
     prevIC := critical("On")
@@ -577,7 +577,7 @@ showGui()    {
     myGui.onEvent("Close", myGui_Close)
     myGui.add("Edit", "w480 readonly", "Universal Declaration of Human Rights")
     myGui.add("Edit", "w480 r5 readonly -wrap", fa6ee997_16a7_44c4_9b05_008ec75510b6("A"))
-    style:=WS_HSCROLL|WS_VSCROLL
+    style := WS_HSCROLL|WS_VSCROLL
     myGui.add("Edit", "w480 r6 readonly +" style, fa6ee997_16a7_44c4_9b05_008ec75510b6("B"))
     myGui.add("Edit", "w480 r6 readonly +" WS_HSCROLL " -" WS_VSCROLL, fa6ee997_16a7_44c4_9b05_008ec75510b6("C"))
     myGui.add("Link",, "<a href=`"https://www.un.org/sites/un2.un.org/files/2021/03/udhr.pdf`">Universal Declaration of Human Rights (UDHR)</a>")
@@ -587,7 +587,7 @@ showGui()    {
     myGui.add("ComboBox", "w480", ["Peace","Dignity","Equality"])
     myGui.add("DropDownList", "w480", ["Maintain International Peace and Security","Protect Human Rights","Deliver Humanitarian Aid","Support Sustainable Development and Climate Action","Uphold International Law"])
     myGui.add("Button", "w480", "Button")
-    style:=0 ;  WS_HSCROLL|WS_VSCROLL
+    style := 0 ;  WS_HSCROLL|WS_VSCROLL
     myGui.opt("+MaxSize +Resize +" style)
     myGui.Title := "United Nations"
     myGui.show("AutoSize")
