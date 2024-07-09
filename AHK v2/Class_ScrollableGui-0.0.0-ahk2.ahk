@@ -1,4 +1,4 @@
-﻿class ScrollableGui ;  ahk2.0
+class ScrollableGui ;  ahk2.0
 {
     static init()    {
         this._coord:=map()
@@ -574,6 +574,7 @@ showGui()    {
         return
     prevIC := critical("On")
     myGui := gui()
+    myGui.onEvent("Close", myGui_Close)
     myGui.add("Edit", "w480 readonly", "Universal Declaration of Human Rights")
     myGui.add("Edit", "w480 r5 readonly -wrap", fa6ee997_16a7_44c4_9b05_008ec75510b6("A"))
     style:=WS_HSCROLL|WS_VSCROLL
@@ -592,6 +593,12 @@ showGui()    {
     myGui.show("AutoSize")
     ScrollableGui.register(myGui.Hwnd)
     critical(prevIC)
+}
+myGui_Close(thisGui)    {
+   global myGui
+   myGui.destroy()
+   myGui := ""
+   return 0
 }
 fa6ee997_16a7_44c4_9b05_008ec75510b6(type)    {
     switch (type)
