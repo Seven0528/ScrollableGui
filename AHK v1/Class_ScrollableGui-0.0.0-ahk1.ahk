@@ -1,10 +1,9 @@
-﻿class ScrollableGui ;  ahk1.1
+class ScrollableGui ;  ahk1.1
 {
     init()    {
-        this._coord:=object()
-        ,this._hRootWnd:=0
-        ,this.registerWndProc(0,-1)
+        this.registerWndProc(0,-1)
     }
+    static _coord:=object(), _hRootWnd:=0
     ;--------------------------------------------------
     register(hWnd)    {
         static SIF_DISABLENOSCROLL  := 0x0008
@@ -563,7 +562,8 @@
 #SingleInstance Force
 ScrollableGui.init()
 gosub F2
-returnF2::
+return
+F2::
     WS_HSCROLL := 0x00100000
     WS_VSCROLL := 0x00200000
     gui +LastFoundExist
