@@ -541,7 +541,7 @@ class ScrollableGui ;  ahk1.1
     ;--------------------------------------------------
     ;  C++ #define HIWORD(l) ((WORD)((((DWORD_PTR)(l)) >> 16) & 0xffff))
     _HIWORD(l)    {
-        return (l<<32>>>48) 
+        return (l<<32>>>48)
     }
     ;  C++ #define LOWORD(l) ((WORD)(((DWORD_PTR)(l)) & 0xffff))
     _LOWORD(l)    {
