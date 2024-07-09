@@ -1,10 +1,9 @@
 class ScrollableGui ;  ahk2.0
 {
     static init()    {
-        this._coord:=map()
-        ,this._hRootWnd:=0
-        ,this.registerWndProc(0,-1)
+        this.registerWndProc(0,-1)
     }
+    static _coord:=map(), _hRootWnd:=0
     ;--------------------------------------------------
     static register(hWnd)    {
         static SIF_DISABLENOSCROLL  := 0x0008
@@ -534,26 +533,12 @@ class ScrollableGui ;  ahk2.0
             ?hParentWnd
             :0)
     }
-    static _getSystemMetrics(nIndex)    {
-        return dllCall("User32.dll\GetSystemMetrics", "Int",nIndex, "Int")
-    }
-    ;--------------------------------------------------
-    ;  C++ #define HIWORD(l) ((WORD)((((DWORD_PTR)(l)) >> 16) & 0xffff))
-    static _HIWORD(l)    {
-        return (l<<32>>>48) 
-    }
-    ;  C++ #define LOWORD(l) ((WORD)(((DWORD_PTR)(l)) & 0xffff))
-    static _LOWORD(l)    {
-        return (l&0xffff) ;  (l<<48>>>48)
-    }
-    ;  C++ #define GET_WHEEL_DELTA_WPARAM(wParam) ((short)HIWORD(wParam))
-    static _GET_WHEEL_DELTA_WPARAM(wParam)    {
-        return (wParam<<32>>48)
-    }
-    ;  C++ #define GET_KEYSTATE_WPARAM(wParam) (LOWORD(wParam))
-    static _GET_KEYSTATE_WPARAM(wParam)    {
-        return (wParam&0xffff)
-    }
+    static _getSystemMetrics(nIndex) => dllCall("User32.dll\GetSystemMetrics", "Int",nIndex, "Int")
+    ;--------------------------------------------------    
+    static _HIWORD(l) => (l<<32>>>48)                               ;  C++ #define HIWORD(l) ((WORD)((((DWORD_PTR)(l)) >> 16) & 0xffff))
+    static _LOWORD(l) => (l&0xffff) ;  (l<<48>>>48)                 ;  C++ #define LOWORD(l) ((WORD)(((DWORD_PTR)(l)) & 0xffff))
+    static _GET_WHEEL_DELTA_WPARAM(wParam) => (wParam<<32>>48)      ;  C++ #define GET_WHEEL_DELTA_WPARAM(wParam) ((short)HIWORD(wParam))
+    static _GET_KEYSTATE_WPARAM(wParam) => (wParam&0xffff)          ;  C++ #define GET_KEYSTATE_WPARAM(wParam) (LOWORD(wParam))
 }
 /*
 #Requires AutoHotkey v2.0
