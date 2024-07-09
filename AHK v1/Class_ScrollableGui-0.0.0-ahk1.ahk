@@ -1,7 +1,7 @@
 class ScrollableGui ;  ahk1.1
 {
     init()    {
-        this.registerWndProc(0,-1)
+        this.registerWndProc(-1,-1)
     }
     static _coord:=object(), _hRootWnd:=0
     ;--------------------------------------------------
@@ -73,12 +73,12 @@ class ScrollableGui ;  ahk1.1
     }
     */
     ;--------------------------------------------------
-    registerWndProc(Msg:=0, maxThreads:=-1)    {
+    registerWndProc(Msg:=-1, maxThreads:=-1)    {
         static WM_DESTROY:=0x0002,WM_HSCROLL:=0x0114, WM_VSCROLL:=0x0115, WM_LBUTTONDOWN:=0x0201, WM_MOUSEWHEEL:=0x020A, WM_MOUSEHWHEEL:=0x020E, WM_SIZING:=0x0214, WM_EXITSIZEMOVE:=0x0232
         if (!this.hasKey("_obmWndProc"))
             this._objbmWndProc:=objBindMethod(this,"wndProc")
         objbm:=this._objbmWndProc
-        if (Msg)    {
+        if (Msg!==-1)    {
             onMessage(Msg,objbm,maxThreads)
         }  else  {
             for _,Msg in [WM_DESTROY,WM_HSCROLL,WM_VSCROLL,WM_LBUTTONDOWN,WM_MOUSEWHEEL,WM_MOUSEHWHEEL,WM_SIZING,WM_EXITSIZEMOVE]
