@@ -361,7 +361,7 @@ class ScrollableGui ;  ahk2.0
             dllCall("User32.dll\PostMessage", "Ptr",pm.hWnd, "UInt",pm.Msg, "UPtr",pm.wParam, "Ptr",pm.lParam)
         return ret
     }
-    static _onSizing(_*)    {
+    static _onSizing(*)    {
         static SIF_DISABLENOSCROLL  := 0x0008
             ,SIF_PAGE               := 0x0002
             ,SIF_POS                := 0x0004
