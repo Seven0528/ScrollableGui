@@ -563,17 +563,16 @@
 #SingleInstance Force
 ScrollableGui.init()
 gosub F2
-return
-F2::
-    WS_HSCROLL:=0x00100000
-    WS_VSCROLL:=0x00200000
+returnF2::
+    WS_HSCROLL := 0x00100000
+    WS_VSCROLL := 0x00200000
     gui +LastFoundExist
     if (winExist())
         return
-    critical % format("{2}",prevIC:=A_IsCritical,"On")
+    critical % format("{2}", prevIC := A_IsCritical, "On")
     gui Add, Edit, w480 readonly, % "Universal Declaration of Human Rights"
     gui Add, Edit, w480 r5 readonly -wrap, % fa6ee997_16a7_44c4_9b05_008ec75510b6("A")
-    style:=WS_HSCROLL|WS_VSCROLL
+    style := WS_HSCROLL|WS_VSCROLL
     gui Add, Edit, w480 r6 readonly +%style%, % fa6ee997_16a7_44c4_9b05_008ec75510b6("B")
     gui Add, Edit, w480 r6 readonly +%WS_HSCROLL% -%WS_VSCROLL%, % fa6ee997_16a7_44c4_9b05_008ec75510b6("C")
     gui Add, Link,, % "<a href=""https://www.un.org/sites/un2.un.org/files/2021/03/udhr.pdf"">Universal Declaration of Human Rights (UDHR)</a>"
@@ -583,9 +582,9 @@ F2::
     gui Add, ComboBox, w480, % "Peace||Dignity|Equality"
     gui Add, DropDownList, w480, % "Maintain International Peace and Security||Protect Human Rights|Deliver Humanitarian Aid|Support Sustainable Development and Climate Action|Uphold International Law"
     gui Add, Button, w480, % "Button"
-    style:=0 ;  WS_HSCROLL|WS_VSCROLL
+    style := 0 ;  WS_HSCROLL|WS_VSCROLL
     gui +LastFound +MaxSize +Resize +%style%
-    guiHwnd:=winExist()
+    guiHwnd := winExist()
     gui Show, AutoSize, % "United Nations"
     ScrollableGui.register(guiHwnd)
     critical % prevIC
