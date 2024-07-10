@@ -6,4 +6,5 @@ It has not yet undergone comprehensive testing.
 For more details, refer to the following thread.  
 [How to show the scrollbar on a Gui Window?](https://www.autohotkey.com/boards/viewtopic.php?f=82&t=131307)
 ### Version 0.1.0
-- Added the `updateSize()` method. It can be called when the window size changes without going through a callback.
+- Added the `updateSize()` method.  
+It can be called when the window size changes without going through a callback.
