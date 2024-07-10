@@ -75,7 +75,7 @@
         if (!this.isRegistered(hRootWnd:=dllCall("User32.dll\GetAncestor", "Ptr",hWnd, "UInt",GA_ROOT, "Ptr")))
             return false
         this._hRootWnd:=hRootWnd
-        this._onSizing()
+        ,this._onSizing()
         return true
     }
     /*
