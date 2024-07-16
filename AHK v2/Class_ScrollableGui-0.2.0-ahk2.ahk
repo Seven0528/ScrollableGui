@@ -1,4 +1,4 @@
-﻿class ScrollableGui ;  ahk2.0
+class ScrollableGui ;  ahk2.0
 {
     static init()    {
         this.registerWndProc(-1,-1)
@@ -79,7 +79,7 @@
         return true
     }
     ;--------------------------------------------------
-    static getBoundarySize(hWnd, &width?, &height?)    {
+    static getBoundary(hWnd, &width?, &height?)    {
         width:= height:= ""
         if (boundarySize:=this._getRegisteredBoundarySize(hWnd))    {
             width:=boundarySize.right - boundarySize.left
@@ -88,7 +88,7 @@
         }
         return false
     }
-    static updateBoundarySize(hWnd, newWidth?, newHeight?, setMaxSize:=true)    {
+    static updateBoundary(hWnd, newWidth?, newHeight?, setMaxSize:=true)    {
         hWnd:=integer(hWnd)
         if (!this._coord.has(hWnd))
         || (!dllCall("User32.dll\IsWindow", "Ptr",hWnd))
