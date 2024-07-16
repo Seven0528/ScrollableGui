@@ -79,6 +79,27 @@ class ScrollableGui ;  ahk2.0
         return true
     }
     ;--------------------------------------------------
+    static getInnerControlsSize(hWnd, &left?, &top?, &right?, &bottom?)    {
+        if (!dllCall("User32.dll\IsWindow", "Ptr",hWnd:=integer(hWnd)))
+            return false
+        left:= top:= right:= bottom:= 0
+        ,prevDHW:=detectHiddenWindows(true)
+        ,prevWD:=setWinDelay(-1)
+        if (hcntlList:=winGetControlsHwnd(hWnd), hcntlList.Length)    {
+            left:= top:= 0x7FFFFFFFFFFFFFFF, right:= bottom:= 0
+            for hCntl in hcntlList    {
+                winGetPos(&cntlX1, &cntlY1, &cntlW, &cntlH, hCntl), cntlX2:=cntlX1+cntlW, cntlY2:=cntlY1+cntlH
+                ,left  :=min(left, cntlX1)
+                ,top   :=min(top, cntlY1)
+                ,right :=max(right, cntlX2)
+                ,bottom:=max(bottom, cntlY2)
+            }
+        }
+        detectHiddenWindows(prevDHW)
+        ,setWinDelay(prevWD)
+        return true
+    }
+    ;--------------------------------------------------
     static getBoundary(hWnd, &width?, &height?)    {
         width:= height:= ""
         if (boundarySize:=this._getRegisteredBoundarySize(hWnd))    {
@@ -117,26 +138,6 @@ class ScrollableGui ;  ahk2.0
             ,setWinDelay(prevWD)
         }
         this.updateSize(hWnd)
-        return true
-    }
-    static getInnerControlsSize(hWnd, &left?, &top?, &right?, &bottom?)    {
-        if (!dllCall("User32.dll\IsWindow", "Ptr",hWnd:=integer(hWnd)))
-            return false
-        left:= top:= right:= bottom:= 0
-        ,prevDHW:=detectHiddenWindows(true)
-        ,prevWD:=setWinDelay(-1)
-        if (hcntlList:=winGetControlsHwnd(hWnd), hcntlList.Length)    {
-            left:= top:= 0x7FFFFFFFFFFFFFFF, right:= bottom:= 0
-            for hCntl in hcntlList    {
-                winGetPos(&cntlX1, &cntlY1, &cntlW, &cntlH, hCntl), cntlX2:=cntlX1+cntlW, cntlY2:=cntlY1+cntlH
-                ,left  :=min(left, cntlX1)
-                ,top   :=min(top, cntlY1)
-                ,right :=max(right, cntlX2)
-                ,bottom:=max(bottom, cntlY2)
-            }
-        }
-        detectHiddenWindows(prevDHW)
-        ,setWinDelay(prevWD)
         return true
     }
     static _getRegisteredBoundarySize(hWnd) => this._coord.has(hWnd:=integer(hWnd))?this._coord[hWnd].border.clone():""
