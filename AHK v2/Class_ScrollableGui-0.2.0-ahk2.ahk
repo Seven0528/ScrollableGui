@@ -89,10 +89,10 @@ class ScrollableGui ;  ahk2.0
             left:= top:= 0x7FFFFFFFFFFFFFFF, right:= bottom:= 0
             for hCntl in hcntlList    {
                 winGetPos(&cntlX1, &cntlY1, &cntlW, &cntlH, hCntl), cntlX2:=cntlX1+cntlW, cntlY2:=cntlY1+cntlH
-                ,left  :=min(left, cntlX1)
-                ,top   :=min(top, cntlY1)
-                ,right :=max(right, cntlX2)
-                ,bottom:=max(bottom, cntlY2)
+                ,left  := min(left, cntlX1)
+                ,top   := min(top, cntlY1)
+                ,right := max(right, cntlX2)
+                ,bottom:= max(bottom, cntlY2)
             }
         }
         detectHiddenWindows(prevDHW)
