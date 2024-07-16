@@ -9,5 +9,5 @@ For more details, refer to the following thread.
 - Added the `updateSize()` method.  
 It can be called when the window size changes without going through a callback.
 ### Version 0.2.0 (2024-07-16)
-- Added the `getInnerControlsSize()`, `getBoundarySize()` and `updateBoundarySize()` methods.
+- Added the `getInnerControlsSize()`, `getBoundary()` and `updateBoundary()` methods.
 - The translation for version 1 has not been completed yet.
