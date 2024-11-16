@@ -17,6 +17,6 @@ It can be called when the window size changes without going through a callback.
 - Added new method `setInnerScrollWithFocus()`.
 ### Version 1.0.0 (2024-11-17)
 - Some parts of the code have been optimized. Not only hWnd but also the Gui object itself can now be used as a parameter. Several method names have been changed for better readability:  
- - `updateSize` → `syncSize`
- - `setInnerScrollWithFocus` → `enableInnerScrollOnFocus`
- - `getInnerControlsSize` → `calculateInnerControlsSize`
+  - `updateSize` → `syncSize`
+  - `setInnerScrollWithFocus` → `enableInnerScrollOnFocus`
+  - `getInnerControlsSize` → `calculateInnerControlsSize`
