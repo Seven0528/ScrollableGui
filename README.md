@@ -1,7 +1,6 @@
 # ScrollableGui
 This class provides scrollable GUI functionality with dynamic size updates.  
-It supports horizontal and vertical scrolling, and allows for customization  
-of scroll behavior, including focus-based inner scrolling.  
+It supports horizontal and vertical scrolling, and allows for customization of scroll behavior, including focus-based inner scrolling.  
 [![Example Photo 1](https://github.com/Seven0528/ScrollableGui/blob/main/Example%20Photo%201.png?raw=true)](https://github.com/Seven0528/ScrollableGui/blob/main/Example%20Photo%201.png)
 ```ahk
 #Requires AutoHotkey v2.0
