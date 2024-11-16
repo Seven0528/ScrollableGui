@@ -184,7 +184,7 @@ Nothing in this Declaration may be interpreted as implying for any State, group 
 - Code release. For more details, refer to the following thread.  
  [How to show the scrollbar on a Gui Window?](https://www.autohotkey.com/boards/viewtopic.php?f=82&t=131307)  
  [Gui Scroll Window v2](https://www.autohotkey.com/boards/viewtopic.php?f=82&t=133676)  
- [Error: Gui has no window.](https://www.autohotkey.com/boards/viewtopic.php?f=82&t=134309&p=590338#p590338)
+ [Error: Gui has no window.](https://www.autohotkey.com/boards/viewtopic.php?f=82&t=134309)
 ### Version 0.1.0 (2024-07-10)
 - Added the `updateSize()` method.  
 It can be called when the window size changes without going through a callback.
