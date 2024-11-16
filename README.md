@@ -12,6 +12,13 @@ It can be called when the window size changes without going through a callback.
 - Added the `getInnerControlsSize()`, `getBoundary()` and `updateBoundary()` methods.
 - The translation for version 1 has not been completed yet.
 ### Version 0.2.1 (2024-07-20)
- - Added `visibleControlsOnly` parameter to `getInnerControlsSize()` method.
+- Added `visibleControlsOnly` parameter to `getInnerControlsSize()` method.
 - Added `innerScrollWithFocus` parameter to `register()` method.
 - Added new method `setInnerScrollWithFocus()`.
+### Version 1.0.0 (2024-11-17)
+- Some parts of the code have been optimized.  
+Not only hWnd but also the Gui object itself can now be used as a parameter.  
+Several method names have been changed for better readability:  
+ - updateSize → syncSize
+ - setInnerScrollWithFocus → enableInnerScrollOnFocus
+ - getInnerControlsSize → calculateInnerControlsSize
