@@ -1,6 +1,7 @@
 # ScrollableGui
-The current code is in the beta phase.  
-It has not yet undergone comprehensive testing.
+This class provides scrollable GUI functionality with dynamic size updates.  
+It supports horizontal and vertical scrolling, and allows for customization  
+of scroll behavior, including focus-based inner scrolling.
 ```ahk
 #Requires AutoHotkey v2.0
 #SingleInstance Force
@@ -31,7 +32,7 @@ showGui()    {
     myGui.add("Edit", "w480", "The work of the United Nations covers five main areas:")
     myGui.add("Edit", "w480")
     myGui.add("UpDown", "Range1-365")
-    myGui.add("ComboBox", "w480", ["Peace","Dignity","Equality"])
+    myGui.add("ComboBox", "w480 Choose1", ["Peace","Dignity","Equality"])
     myGui.add("DropDownList", "w480 Choose1", ["Maintain International Peace and Security","Protect Human Rights","Deliver Humanitarian Aid","Support Sustainable Development and Climate Action","Uphold International Law"])
     myGui.add("Button", "w480", "Button")
     style := 0 ;  WS_HSCROLL|WS_VSCROLL
