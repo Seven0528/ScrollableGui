@@ -78,6 +78,82 @@ class ScrollableGui ;  ahk2.0
         ,this._onSizing()
         return true
     }
+    ;--------------------------------------------------
+    static getInnerControlsSize(hWnd, &left?, &top?, &right?, &bottom?)    {
+        if (!dllCall("User32.dll\IsWindow", "Ptr",hWnd:=integer(hWnd)))
+            return false
+        left:= top:= right:= bottom:= 0
+        ,prevDHW:=detectHiddenWindows(true)
+        ,prevWD:=setWinDelay(-1)
+        if (hcntlList:=winGetControlsHwnd(hWnd), hcntlList.Length)    {
+            left:= top:= 0x7FFFFFFFFFFFFFFF, right:= bottom:= 0
+            for hCntl in hcntlList    {
+                winGetPos(&cntlX1, &cntlY1, &cntlW, &cntlH, hCntl), cntlX2:=cntlX1+cntlW, cntlY2:=cntlY1+cntlH
+                ,left  := min(left, cntlX1)
+                ,top   := min(top, cntlY1)
+                ,right := max(right, cntlX2)
+                ,bottom:= max(bottom, cntlY2)
+            }
+        }
+        detectHiddenWindows(prevDHW)
+        ,setWinDelay(prevWD)
+        return true
+    }
+    ;--------------------------------------------------
+    static getBoundary(hWnd, &width?, &height?)    {
+        width:= height:= ""
+        if (boundarySize:=this._getRegisteredBoundarySize(hWnd))    {
+            width:=boundarySize.right - boundarySize.left
+            ,height:=boundarySize.top - boundarySize.bottom
+            return true
+        }
+        return false
+    }
+    static updateBoundary(hWnd, newWidth?, newHeight?, setMaxSize:=true)    {
+        hWnd:=integer(hWnd)
+        if (!this._coord.has(hWnd))
+        || (!dllCall("User32.dll\IsWindow", "Ptr",hWnd))
+        || !(guiObj:=guiFromHwnd(hWnd))
+        || (!isSet(newWidth) && !isSet(newHeight))
+            return false
+        borderLeft:=this._coord[hWnd].border.left
+        ,borderTop:=this._coord[hWnd].border.top
+        ,this._registerBoundarySize(hWnd,,, (isSet(newWidth) ? borderLeft + newWidth : unset), (isSet(newHeight) ? borderTop + newHeight : unset))
+        if (setMaxSize)    {
+            prevDHW:=detectHiddenWindows(true)
+            ,prevWD:=setWinDelay(-1)
+            ,guiObj.getPos(&guiX, &guiY, &guiW, &guiH), winGetPos(&winX, &winY, &winW, &guiH, hWnd)
+            switch (guiDpiScaled:=(guiW !== winW || guiH !== guiH))
+            {
+                default:
+                    guiObj.opt("+MaxSize" (newWidth??"") "x" (newHeight??""))
+                case true:
+                    prevIC:=critical("On")
+                    ,guiObj.opt("-DPIScale")
+                    ,guiObj.opt("+MaxSize" (newWidth??"") "x" (newHeight??""))
+                    ,guiObj.opt("+DPIScale")
+                    ,critical(prevIC)
+            }
+            detectHiddenWindows(prevDHW)
+            ,setWinDelay(prevWD)
+        }
+        this.updateSize(hWnd)
+        return true
+    }
+    static _getRegisteredBoundarySize(hWnd) => this._coord.has(hWnd:=integer(hWnd))?this._coord[hWnd].border.clone():""
+    static _registerBoundarySize(hWnd, left?, top?, right?, bottom?)    {
+        if (!this._coord.has(hWnd:=integer(hWnd)))
+            return false
+        currBorder:=this._coord[hWnd].border
+        ,newBorder:={left:left??currBorder.left
+            ,top:top??currBorder.top
+            ,right:right??currBorder.right
+            ,bottom:top??currBorder.bottom}
+        if (newBorder.right < newBorder.left || newBorder.bottom < newBorder.top)
+            return false
+        return (this._coord[hWnd].border:=newBorder, true)
+    }
+    ;--------------------------------------------------
     /*
     static setOptions(hWnd, option?)    { ;  Not implemented yet.
     }
@@ -174,7 +250,7 @@ class ScrollableGui ;  ahk2.0
         nBar:=(Msg==WM_HSCROLL?SB_HORZ:SB_VERT)
         ,lpsi:=buffer(28,0)
         ,numPut("UInt",28,lpsi,0)       ;  cbSize
-        ,NumPut("UInt",SIF_ALL,lpsi,4)  ;  fMask
+        ,numput("UInt",SIF_ALL,lpsi,4)  ;  fMask
         if (!dllCall("User32.dll\GetScrollInfo", "Ptr",hRootWnd, "Int",nBar, "Ptr",lpsi.Ptr))
             return
         nMin    := numGet(lpsi,8,"Int")
@@ -410,7 +486,7 @@ class ScrollableGui ;  ahk2.0
         ,nPosHorzPrev:=numGet(lpsi,20,"Int")
         ,lpsi:=buffer(28,0)
         ,numPut("UInt",28,lpsi,0)       ;  cbSize
-        ,NumPut("UInt",SIF_POS,lpsi,4)  ;  fMask
+        ,numput("UInt",SIF_POS,lpsi,4)  ;  fMask
         ,dllCall("User32.dll\GetScrollInfo", "Ptr",hRootWnd, "Int",SB_VERT, "Ptr",lpsi.Ptr)
         ,nPosVertPrev:=numGet(lpsi,20,"Int")
         ;-----------------------------------
@@ -458,12 +534,12 @@ class ScrollableGui ;  ahk2.0
         ;-----------------------------------       
         ,lpsi:=buffer(28,0)
         ,numPut("UInt",28,lpsi,0)       ;  cbSize
-        ,NumPut("UInt",SIF_POS,lpsi,4)  ;  fMask
+        ,numput("UInt",SIF_POS,lpsi,4)  ;  fMask
         ,dllCall("User32.dll\GetScrollInfo", "Ptr",hRootWnd, "Int",SB_HORZ, "Ptr",lpsi.Ptr)
         ,nPosHorzCurr:=numGet(lpsi,20,"Int")
         ,lpsi:=buffer(28,0)
         ,numPut("UInt",28,lpsi,0)       ;  cbSize
-        ,NumPut("UInt",SIF_POS,lpsi,4)  ;  fMask
+        ,numput("UInt",SIF_POS,lpsi,4)  ;  fMask
         ,dllCall("User32.dll\GetScrollInfo", "Ptr",hRootWnd, "Int",SB_VERT, "Ptr",lpsi.Ptr)
         ,nPosVertCurr:=numGet(lpsi,20,"Int")
         ,dx:=nPosHorzPrev-nPosHorzCurr
