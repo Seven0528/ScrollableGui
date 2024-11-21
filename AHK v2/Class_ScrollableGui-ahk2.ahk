@@ -3,9 +3,9 @@ class ScrollableGui ;  ahk2.0
     static init()    {
         this.registerWndProc(-1,-1)
     }
-    static _coord:=map(), _hRootWnd:=0
+    static _coord:=map(), _opt:=map(), _hRootWnd:=0
     ;--------------------------------------------------
-    static register(hWnd)    {
+    static register(hWnd, innerScrollWithFocus:=true)    {
         static SIF_DISABLENOSCROLL  := 0x0008
             ,SIF_PAGE               := 0x0002
             ,SIF_POS                := 0x0004
@@ -42,6 +42,7 @@ class ScrollableGui ;  ahk2.0
             this._coord[hWnd].border.%k%:=client.%k%
         border:=this._coord[hWnd].border
         ,invisibility:=this._coord[hWnd].invisibility
+        ,this._opt[hWnd] := {innerScrollWithFocus:(!!innerScrollWithFocus)}
         ;-----------------------------------
         ,lpsi:=buffer(28,0)
         ,numPut("UInt",28,lpsi,0), numPut("UInt",SIF_PAGE|SIF_POS|SIF_RANGE,lpsi,4)
@@ -61,9 +62,16 @@ class ScrollableGui ;  ahk2.0
         return true
     }
     static unregister(hWnd)    {
-        if (this._coord.has(hWnd:=integer(hWnd)))
-            return (this._coord.delete(hWnd), true)
+        if (this._coord.has(hWnd:=integer(hWnd)))    {
+            this._coord.delete(hWnd)
+            ,this._opt.delete(hWnd)
+            return true
+        }
         return false
+    }
+    static setInnerScrollWithFocus(hWnd, onoff:=true)    {
+        if (this._coord.has(hWnd:=integer(hWnd)))
+            this._opt[hWnd].innerScrollWithFocus := (!!onoff)
     }
     static isRegistered(hWnd)    {
         return (this._coord.has(hWnd:=integer(hWnd)))
@@ -79,7 +87,7 @@ class ScrollableGui ;  ahk2.0
         return true
     }
     ;--------------------------------------------------
-    static getInnerControlsSize(hWnd, &left?, &top?, &right?, &bottom?)    {
+    static getInnerControlsSize(hWnd, &left?, &top?, &right?, &bottom?, visibleControlsOnly:=true)    {
         if (!dllCall("User32.dll\IsWindow", "Ptr",hWnd:=integer(hWnd)))
             return false
         left:= top:= right:= bottom:= 0
@@ -88,6 +96,10 @@ class ScrollableGui ;  ahk2.0
         if (hcntlList:=winGetControlsHwnd(hWnd), hcntlList.Length)    {
             left:= top:= 0x7FFFFFFFFFFFFFFF, right:= bottom:= 0
             for hCntl in hcntlList    {
+                if (visibleControlsOnly)    {
+                    if (!controlGetVisible(hCntl))
+                        continue
+                }
                 winGetPos(&cntlX1, &cntlY1, &cntlW, &cntlH, hCntl), cntlX2:=cntlX1+cntlW, cntlY2:=cntlY1+cntlH
                 ,left  := min(left, cntlX1)
                 ,top   := min(top, cntlY1)
@@ -376,8 +388,13 @@ class ScrollableGui ;  ahk2.0
             return
         }
         ;-----------------------------------
-        if (hFocusWnd:=dllCall("User32.dll\GetFocus", "Ptr"))    {
-            style:=this._getWindowStyle(hFocusWnd)
+        switch (this._opt[hRootWnd].innerScrollWithFocus)
+        {
+            case true:          hCntl:=dllCall("User32.dll\GetFocus", "Ptr")
+            default:            hCntl:=hWnd
+        }
+        if (hCntl)    {
+            style:=this._getWindowStyle(hCntl)
             switch (pm.Msg)
             {
                 case WM_VSCROLL:
@@ -390,17 +407,17 @@ class ScrollableGui ;  ahk2.0
                     hasScroll:=style&WS_HSCROLL
             }
             if (hasScroll)    {
-                if (hFocusWnd==hWnd && hFocusWnd!==hRootWnd)    {
+                if (hCntl==hWnd && hCntl!==hRootWnd)    {
                     switch (pm.Msg)
                     {
-                        case WM_VSCROLL:        bRet:=this._getVScrollBarInfo(hFocusWnd, &objsbi)
-                        default:                bRet:=this._getHScrollBarInfo(hFocusWnd, &objsbi) ;  WM_HSCROLL
+                        case WM_VSCROLL:        bRet:=this._getVScrollBarInfo(hCntl, &objsbi)
+                        default:                bRet:=this._getHScrollBarInfo(hCntl, &objsbi) ;  WM_HSCROLL
                     }
                     if (bRet)    {
                         if !(objsbi.rgstate[0]&STATE_SYSTEM_UNAVAILABLE)    {
                             if (pm.Msg==WM_HSCROLL)    {
                                 loop (wheelCount*3)
-                                    dllCall("User32.dll\PostMessage", "Ptr",hFocusWnd, "UInt",pm.Msg, "UPtr",pm.wParam, "Ptr",pm.lParam)
+                                    dllCall("User32.dll\PostMessage", "Ptr",hCntl, "UInt",pm.Msg, "UPtr",pm.wParam, "Ptr",pm.lParam)
                                 wheelCount:=0, ret:=0
                             }  else  {
                                 wheelCount:=0, ret:=""
@@ -410,11 +427,11 @@ class ScrollableGui ;  ahk2.0
                 }
             }  else  {
                 hComboBoxWnd:=0
-                switch (this._getClassName(hFocusWnd))
+                switch (this._getClassName(hCntl))
                 {
-                    case "ComboBox":                hComboBoxWnd:=hFocusWnd
+                    case "ComboBox":                hComboBoxWnd:=hCntl
                     case "Edit": ;  UpDown
-                        if (hUpDownWnd:=this._isEditConnectedToUpDown(hFocusWnd))    {
+                        if (hUpDownWnd:=this._isEditConnectedToUpDown(hCntl))    {
                             wheelCount:=0, ret:=0
                             ,pos32:=dllCall("User32.dll\SendMessage", "Ptr",hUpDownWnd, "UInt",UDM_GETPOS32, "UPtr",0, "Ptr",0)
                             ,dllCall("User32.dll\SendMessage", "Ptr",hUpDownWnd, "UInt",UDM_SETPOS32, "UPtr",0, "Ptr",pos32+wheelDistance//WHEEL_DELTA)
@@ -424,7 +441,7 @@ class ScrollableGui ;  ahk2.0
                              Up-Down Control
                             https://learn.microsoft.com/en-us/windows/win32/controls/up-down-control-reference
                             */
-                        }  else if (hComboBoxWnd:=this._isEditConnectedToComboBox(hFocusWnd))    {
+                        }  else if (hComboBoxWnd:=this._isEditConnectedToComboBox(hCntl))    {
                             /*
                              ComboBox Control Messages
                             https://learn.microsoft.com/en-us/windows/win32/controls/bumper-combobox-control-reference-messages
