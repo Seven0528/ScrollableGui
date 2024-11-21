@@ -1,4 +1,4 @@
-﻿class ScrollableGui ;  ahk1.1
+class ScrollableGui ;  ahk1.1
 {
     init()    {
         this.registerWndProc(-1,-1)
@@ -67,6 +67,16 @@
     }
     isRegistered(hWnd)    {
         return (this._coord.hasKey(hWnd:=format("{:d}",hWnd)))
+    }
+    updateSize(hWnd)    {
+        static GA_ROOT:=2
+        if (!dllCall("User32.dll\IsWindow", "Ptr",hWnd:=format("{:d}",hWnd)))
+            return false
+        if (!this.isRegistered(hRootWnd:=dllCall("User32.dll\GetAncestor", "Ptr",hWnd, "UInt",GA_ROOT, "Ptr")))
+            return false
+        this._hRootWnd:=hRootWnd
+        ,this._onSizing()
+        return true
     }
     /*
     setOptions(hWnd, option:="")    { ;  Not implemented yet.
