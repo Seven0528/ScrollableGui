@@ -11,8 +11,6 @@ F3::    {
 }
 showGui()    {
     global myGui
-    WS_HSCROLL := 0x00100000
-    WS_VSCROLL := 0x00200000
     if (isSet(myGui) && myGui is gui)
         return
     prevIC := critical("On")
