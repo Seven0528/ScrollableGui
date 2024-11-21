@@ -2,7 +2,7 @@ class ScrollableGui
 {
     /*
     ScrollableGui Class
-    Version: 1.0.0
+    Version: 1.0.1
     Compatible with: AutoHotkey v2.0+
     Copyright (c) 2024 SevenKeyboard Ltd.
 
@@ -17,6 +17,10 @@ class ScrollableGui
     This class provides scrollable GUI functionality with dynamic size updates.
     It supports horizontal and vertical scrolling, and allows for customization
     of scroll behavior, including focus-based inner scrolling.
+
+
+    hWnd 하위 비트만 짤라서 작업할 것.
+
     */
     static init()    {
         this.registerWndProc(-1,-1)
@@ -209,7 +213,7 @@ class ScrollableGui
         }
         prevIC := critical("On")
         ret:=""
-        if (this.isRegistered(this._hRootWnd:=dllCall("User32.dll\GetAncestor", "Ptr",hWnd, "UInt",GA_ROOT, "Ptr")))    {
+        if (this.isRegistered(this._hRootWnd:=dllCall("User32.dll\GetAncestor", "Ptr",hWnd, "UInt",GA_ROOT, "Ptr")&0xffffffff))    {
             switch (Msg)
             {
                 case WM_DESTROY:
@@ -626,7 +630,7 @@ class ScrollableGui
         }
         return bRet
     }
-    static _resolveHwnd(&hWnd_or_guiObj) => hWnd_or_guiObj is gui ? hWnd_or_guiObj.Hwnd : integer(hWnd_or_guiObj)
+    static _resolveHwnd(&hWnd_or_guiObj) => (hWnd_or_guiObj is gui?hWnd_or_guiObj.Hwnd:integer(hWnd_or_guiObj))&0xffffffff
     static _isWindow(hWnd) => dllCall("User32.dll\IsWindow", "Ptr",hWnd, "Int")
     static _getWindowStyle(hWnd)    {
         static GWL_STYLE:=-16
