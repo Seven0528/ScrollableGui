@@ -39,8 +39,8 @@ showGui()    {
     critical(prevIC)
 }
 myGui_Close(thisGui)    {
-   global myGui
-   myGui.destroy()
-   myGui := ""
-   return 0
+    global myGui
+    myGui.destroy()
+    myGui := ""
+    return 0
 }
