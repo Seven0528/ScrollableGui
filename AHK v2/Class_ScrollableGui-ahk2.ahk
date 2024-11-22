@@ -8,7 +8,7 @@ class ScrollableGui
 
     Licensed under the MIT License.
     You may obtain a copy of the License at:
-    https://github.com/Seven0528/ScrollableGui/blob/main/LICENSE
+    https://github.com/Seven0528/ScrollableGui/blob/v2.0/LICENSE
 
     Official Repository:
     https://github.com/Seven0528/ScrollableGui
