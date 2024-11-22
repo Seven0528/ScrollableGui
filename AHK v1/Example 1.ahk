@@ -1,8 +1,7 @@
-﻿#Requires AutoHotkey v1.1
+#Requires AutoHotkey v1.1
 #NoEnv
 #SingleInstance Force
 #Include <Class_ScrollableGui-ahk1>
-#Include <DumpArray-1.0.0>
 ScrollableGui.init()
 showGui()
 F2::showGui()
