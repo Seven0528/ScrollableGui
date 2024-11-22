@@ -88,7 +88,7 @@ class ScrollableGui
         return false
     }
     static enableInnerScrollOnFocus(hWnd_or_guiObj, onoff:=true)    {
-        if (this._coord.has(hWnd:=this._resolveHwnd(&hWnd_or_guiObj)))
+        if (this._opt.has(hWnd:=this._resolveHwnd(&hWnd_or_guiObj)))
             this._opt[hWnd].innerScrollOnFocus := (!!onoff)
     }
     static isRegistered(hWnd_or_guiObj)    {
