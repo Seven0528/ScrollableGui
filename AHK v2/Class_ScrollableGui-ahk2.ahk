@@ -118,7 +118,7 @@ class ScrollableGui
                     if (!controlGetVisible(hCntl))
                         continue
                 }
-                winGetPos(&cntlX1, &cntlY1, &cntlW, &cntlH, hCntl), cntlX2:=cntlX1+cntlW, cntlY2:=cntlY1+cntlH
+                controlGetPos(&cntlX1, &cntlY1, &cntlW, &cntlH, hCntl), cntlX2:=cntlX1+cntlW, cntlY2:=cntlY1+cntlH
                 ,left  := min(left, cntlX1)
                 ,top   := min(top, cntlY1)
                 ,right := max(right, cntlX2)
@@ -134,7 +134,7 @@ class ScrollableGui
         width:= height:= ""
         if (boundarySize:=this._getRegisteredBoundarySize(hWnd:=this._resolveHwnd(&hWnd_or_guiObj)))    {
             width:=boundarySize.right - boundarySize.left
-            ,height:=boundarySize.top - boundarySize.bottom
+            ,height:=boundarySize.bottom - boundarySize.top
             return true
         }
         return false
@@ -146,10 +146,16 @@ class ScrollableGui
         || !(guiObj:=guiFromHwnd(hWnd))
         || (!isSet(newWidth) && !isSet(newHeight))
             return false
-        borderLeft:=this._coord[hWnd].border.left
-        ,borderTop:=this._coord[hWnd].border.top
-        ,this._registerBoundarySize(hWnd,,, (isSet(newWidth) ? borderLeft + newWidth : unset), (isSet(newHeight) ? borderTop + newHeight : unset))
+        border:=this._coord[hWnd].border
+        ,prevWidth:=border.right-border.left
+        ,prevHeight:=border.bottom-border.top
+        ,this._registerBoundarySize(hWnd,,, (isSet(newWidth) ? border.left + newWidth : unset), (isSet(newHeight) ? border.top + newHeight : unset))
         if (setMaxSize)    {
+            showOptions:=""
+            if (newWidth<prevWidth)
+                showOptions.="w" newWidth
+            if (newHeight<prevHeight)
+                showOptions.=(showOptions==""?"":" ") "h" newHeight
             prevDHW:=detectHiddenWindows(true)
             ,prevWD:=setWinDelay(-1)
             ,guiObj.getPos(&guiX, &guiY, &guiW, &guiH), winGetPos(&winX, &winY, &winW, &guiH, hWnd)
@@ -157,11 +163,15 @@ class ScrollableGui
             {
                 default:
                     guiObj.opt("+MaxSize" (newWidth??"") "x" (newHeight??""))
+                    if (showOptions !== "")
+                        gui.show(showOptions)
                 case true:
                     prevIC:=critical("On")
                     ,guiObj.opt("-DPIScale")
                     ,guiObj.opt("+MaxSize" (newWidth??"") "x" (newHeight??""))
-                    ,guiObj.opt("+DPIScale")
+                    if (showOptions !== "")
+                        gui.show(showOptions)
+                    guiObj.opt("+DPIScale")
                     ,critical(prevIC)
             }
             detectHiddenWindows(prevDHW)
@@ -178,7 +188,7 @@ class ScrollableGui
         ,newBorder:={left:left??currBorder.left
             ,top:top??currBorder.top
             ,right:right??currBorder.right
-            ,bottom:top??currBorder.bottom}
+            ,bottom:bottom??currBorder.bottom}
         if (newBorder.right < newBorder.left || newBorder.bottom < newBorder.top)
             return false
         return (this._coord[hWnd].border:=newBorder, true)
