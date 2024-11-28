@@ -12,8 +12,6 @@ F3::
     return
 showGui()    {
     global hGuiWnd
-    WS_HSCROLL := 0x00100000
-    WS_VSCROLL := 0x00200000
     gui +LastFoundExist
     if (winExist())
         return
